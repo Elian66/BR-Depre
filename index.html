@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brasileirão da Depressão</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #f0f2f5;
+            --text-color: #333;
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .custom-select {
+            position: relative;
+            width: 100%;
+        }
+
+        .select-selected {
+            background-color: white;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            padding: 12px 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .select-selected:hover {
+            border-color: var(--primary-color);
+        }
+
+        .select-selected::after {
+            content: '▼';
+            color: #888;
+            font-size: 0.8em;
+        }
+
+        .select-items {
+            position: absolute;
+            background-color: white;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 99;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-height: 250px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .select-items div {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .select-items div:hover {
+            background-color: #f0f0f0;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .switch-form {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .switch-form a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .switch-form a:hover {
+            color: #2980b9;
+        }
+
+        #error-message, 
+        #error-message-register, 
+        #error-message-recover {
+            color: #e74c3c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        #recover-form, 
+        #register-form {
+            display: none;
+        }
+
+        .team-logo {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Form -->
+        <form id="login-form">
+            <h2>Brasileirão da Depressão</h2>
+            <div id="error-message"></div>
+            <div class="input-wrapper">
+                <input type="email" id="login-email" placeholder="E-mail" required>
+            </div>
+            <div class="input-wrapper">
+                <input type="password" id="login-password" placeholder="Senha" required>
+            </div>
+            <button type="submit">Entrar</button>
+            <div class="switch-form">
+                <a href="#" id="show-recover">Esqueceu a senha?</a> | 
+                <a href="#" id="show-register">Cadastre-se</a>
+            </div>
+        </form>
+
+        <!-- Register Form -->
+        <form id="register-form">
+            <h2>Novo Cadastro</h2>
+            <div id="error-message-register"></div>
+            <div class="input-wrapper">
+                <input type="text" id="register-name" placeholder="Nome" required>
+            </div>
+            <div class="input-wrapper">
+                <input type="text" id="register-abbr" placeholder="Sigla (3 letras)" maxlength="3" required>
+            </div>
+            <div class="input-wrapper">
+                <input type="email" id="register-email" placeholder="E-mail" required>
+            </div>
+            <div class="input-wrapper">
+                <input type="password" id="register-password" placeholder="Senha" required>
+            </div>
+            <div class="input-wrapper custom-select" id="team-select-wrapper">
+                <div class="select-selected" id="selected-team">Selecione seu time</div>
+                <div class="select-items" id="team-dropdown"></div>
+            </div>
+            <button type="submit">Cadastrar</button>
+            <div class="switch-form">
+                <a href="#" id="show-login">Voltar para Login</a>
+            </div>
+        </form>
+
+        <!-- Password Recovery Form -->
+        <form id="recover-form">
+            <h2>Recuperar Senha</h2>
+            <div id="error-message-recover"></div>
+            <div class="input-wrapper">
+                <input type="email" id="recover-email" placeholder="E-mail" required>
+            </div>
+            <button type="submit">Enviar Link de Recuperação</button>
+            <div class="switch-form">
+                <a href="#" id="show-login-from-recover">Voltar para Login</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration (Replace with your own)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+            storageBucket: "brdepre.firebasestorage.app",
+            messagingSenderId: "1077826896098",
+            appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
+            measurementId: "G-4JXFEZ8DW6"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Form Elements
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const recoverForm = document.getElementById('recover-form');
+        const errorMessage = document.getElementById('error-message');
+        const errorMessageRegister = document.getElementById('error-message-register');
+        const errorMessageRecover = document.getElementById('error-message-recover');
+        const selectedTeam = document.getElementById('selected-team');
+        const teamDropdown = document.getElementById('team-dropdown');
+        const teamSelectWrapper = document.getElementById('team-select-wrapper');
+
+        let selectedTeamId = '';
+
+        // Custom Select Dropdown
+        function createCustomTeamSelect() {
+            const teamsRef = database.ref('teams');
+            teamsRef.once('value', (snapshot) => {
+                const teams = snapshot.val();
+                for (let teamId in teams) {
+                    const teamDiv = document.createElement('div');
+                    
+                    // Create team option with logo and name
+                    const teamOption = document.createElement('div');
+                    teamOption.innerHTML = `
+                        <img src="${teams[teamId].image || ''}" class="team-logo" alt="${teams[teamId].name}">
+                        ${teams[teamId].name} (${teams[teamId].abbr})
+                    `;
+                    
+                    teamDiv.appendChild(teamOption);
+                    teamDiv.addEventListener('click', () => {
+                        selectedTeam.innerHTML = teamOption.innerHTML;
+                        selectedTeamId = teamId;
+                        teamDropdown.style.display = 'none';
+                    });
+                    
+                    teamDropdown.appendChild(teamDiv);
+                }
+            });
+        }
+
+        // Toggle team dropdown
+        selectedTeam.addEventListener('click', () => {
+            teamDropdown.style.display = teamDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!teamSelectWrapper.contains(event.target)) {
+                teamDropdown.style.display = 'none';
+            }
+        });
+
+        // Form Switch Links (previous implementation remains the same)
+        document.getElementById('show-register').addEventListener('click', () => {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+            recoverForm.style.display = 'none';
+        });
+
+        document.getElementById('show-login').addEventListener('click', () => {
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            recoverForm.style.display = 'none';
+        });
+
+        document.getElementById('show-recover').addEventListener('click', () => {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'none';
+            recoverForm.style.display = 'block';
+        });
+
+        document.getElementById('show-login-from-recover').addEventListener('click', () => {
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            recoverForm.style.display = 'none';
+        });
+
+        // Login Handler
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Redirect to home page or dashboard
+                    window.location.href = 'home.html';
+                })
+                .catch((error) => {
+                    errorMessage.textContent = 'Erro ao fazer login: ' + error.message;
+                });
+        });
+
+        // Registration Handler
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const abbr = document.getElementById('register-abbr').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+
+            // Validate abbreviation
+            if (abbr.length !== 3) {
+                errorMessageRegister.textContent = 'A sigla deve ter exatamente 3 letras';
+                return;
+            }
+
+            // Validate team selection
+            if (!selectedTeamId) {
+                errorMessageRegister.textContent = 'Por favor, selecione um time';
+                return;
+            }
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    
+                    // Save additional user info to database
+                    return database.ref('users/' + user.uid).set({
+                        name: name,
+                        abbr: abbr,
+                        email: email,
+                        teamId: selectedTeamId,
+                        pointsSuperligaAbertura: 0,
+                        pointsSuperligaClausura: 0,
+                        lastRoundPointsLigaAbertura: 0,
+                        lastRoundPointsLigaClausura: 0
+                    });
+                })
+                .then(() => {
+                    // Redirect to home page or dashboard
+                    window.location.href = 'home.html';
+                })
+                .catch((error) => {
+                    errorMessageRegister.textContent = 'Erro no cadastro: ' + error.message;
+                });
+        });
+
+        // Password Recovery Handler
+        recoverForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('recover-email').value;
+
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    errorMessageRecover.style.color = 'green';
+                    errorMessageRecover.textContent = 'Link de recuperação enviado para seu e-mail';
+                })
+                .catch((error) => {
+                    errorMessageRecover.style.color = 'red';
+                    errorMessageRecover.textContent = 'Erro ao enviar link de recuperação: ' + error.message;
+                });
+        });
+
+        // Create custom team select on page load
+        createCustomTeamSelect();
+    </script>
+</body>
+</html>

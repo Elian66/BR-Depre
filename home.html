@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brasileirão da Depressão</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #f0f2f5;
+            --card-background: white;
+            --text-color: #333;
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .user-profile img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .user-info h2 {
+            margin-bottom: 5px;
+        }
+
+        .user-info .team-info {
+            display: flex;
+            align-items: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .user-info .team-info img {
+            width: 30px;
+            height: 30px;
+            margin-left: 10px;
+        }
+
+        .sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .section-card {
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .section-card:hover {
+            transform: scale(1.02);
+        }
+        .section-card h3 {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-card .status {
+            font-size: 0.8em;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .status-em-progresso {
+            background-color: #f1c40f;
+            color: white;
+        }
+
+        .status-finalizada {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .status-nao-iniciada {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .standings-table th, 
+        .standings-table td {
+            border-bottom: 1px solid #ecf0f1;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .standings-table th {
+            background-color: #f8f9fa;
+        }
+
+        .standings-table tr.highlighted {
+            background-color: #f0f8ff;
+            font-weight: 500;
+        }
+
+        .standings-table .you-marker {
+            color: var(--primary-color);
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+
+        .action-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .action-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="user-profile" id="user-profile">
+                <!-- User profile will be dynamically populated -->
+            </div>
+            <div>
+                <button class="action-button" id="logout-button">Sair</button>
+                <button class="action-button" id="admin-button" style="display:none;">Administração</button>
+            </div>
+        </div>
+
+        <div class="sections">
+            <div class="section-card" id="superliga-section" data-page="superliga.html">
+                <h3>
+                    Superliga 
+                    <span class="status status-em-progresso">Em Progresso</span>
+                </h3>
+                <table class="standings-table" id="superliga-table">
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Jogador</th>
+                            <th>Pontos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic standings will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section-card" id="supercopa-section" data-page="supercopa.html">
+                <h3>
+                    Supercopa 
+                    <span class="status status-nao-iniciada">Não Iniciada</span>
+                </h3>
+                <p>Competição ainda não iniciada. Aguarde mais informações.</p>
+            </div>
+
+            <div class="section-card" id="palpites-section" data-page="palpites.html">
+                <h3>Próxima Rodada</h3>
+                <div id="next-round-info">
+                    <!-- Next round information will be dynamically populated -->
+                    <p>Nenhuma rodada disponível no momento.</p>
+                </div>
+                <button class="action-button" id="make-predictions-button">Fazer Palpites</button>
+            </div>
+
+            <div class="section-card" id="historico-section" data-page="historico.html">
+                <h3>Histórico</h3>
+                <div id="past-rounds">
+                    <!-- Past rounds will be dynamically populated -->
+                    <p>Nenhum histórico de rodadas disponível.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration (Replace with your own)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBrIiwL2sUVEPc8YBzdkJxPVyVVC5QN1M",
+            authDomain: "brdepre.firebaseapp.com",
+            databaseURL: "https://brdepre-default-rtdb.firebaseio.com",
+            projectId: "brdepre",
+            storageBucket: "brdepre.firebasestorage.app",
+            messagingSenderId: "1077826896098",
+            appId: "1:1077826896098:web:abe2b07a280a4852649ebb",
+            measurementId: "G-4JXFEZ8DW6"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Logout functionality
+        document.getElementById('logout-button').addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = 'login.html';
+            }).catch((error) => {
+                console.error('Erro ao sair:', error);
+            });
+        });
+
+        // Authentication State Observer
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in
+                loadUserProfile(user.uid);
+                loadSuperligaStandings();
+                loadSupercopaInfo();  // Adicionar esta linha
+                loadNextRound();
+                loadPastRounds();
+                checkAdminStatus(user.uid);
+            } else {
+                // No user is signed in
+                window.location.href = 'login.html';
+            }
+        });
+
+        function loadUserProfile(userId) {
+            const userProfileRef = database.ref('users/' + userId);
+            const teamsRef = database.ref('teams');
+
+            userProfileRef.once('value', (userSnapshot) => {
+                const userData = userSnapshot.val();
+                
+                teamsRef.child(userData.teamId).once('value', (teamSnapshot) => {
+                    const teamData = teamSnapshot.val();
+                    
+                    const userProfileElement = document.getElementById('user-profile');
+                    userProfileElement.innerHTML = `
+                        <img src="${teamData.image || 'default-avatar.png'}" alt="Team Logo">
+                        <div class="user-info">
+                            <h2>${userData.name}</h2>
+                            <div class="team-info">
+                                ${teamData.name} (${userData.abbr})
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        function loadSuperligaStandings() {
+            const usersRef = database.ref('users');
+            const tableBody = document.querySelector('#superliga-table tbody');
+            const superligaStagesRef = database.ref('tournaments/superliga/stages');
+            const currentUser = auth.currentUser;
+
+            superligaStagesRef.once('value', (snapshot) => {
+                let status = "";
+                snapshot.forEach((childSnapshot) => {
+                    const stageData = childSnapshot.val();
+                    if (stageData.status === 1) {
+                        status = childSnapshot.key;
+                    }
+                });
+
+                const pointsField = (status === 'abertura') ? 'pointsSuperligaAbertura' : 
+                                (status === 'clausura') ? 'pointsSuperligaClausura' : 
+                                'pointsSuperligaClausura';
+
+                usersRef.once('value', (snapshot) => {
+                    const allUsers = [];
+                    snapshot.forEach((childSnapshot) => {
+                        const userData = childSnapshot.val();
+                        if (userData[pointsField] !== undefined) {
+                            allUsers.push({
+                                id: childSnapshot.key,
+                                name: userData.name,
+                                points: userData[pointsField] || 0,
+                                lastRoundPoints: userData.lastRoundPointsLigaAbertura || 0
+                            });
+                        }
+                    });
+
+                    // Ordenar por pontos e depois por pontos da última rodada
+                    allUsers.sort((a, b) => {
+                        if (b.points === a.points) {
+                            return b.lastRoundPoints - a.lastRoundPoints;
+                        }
+                        return b.points - a.points;
+                    });
+
+                    // Encontrar a posição do usuário atual
+                    const currentUserIndex = allUsers.findIndex(user => user.id === currentUser.uid);
+                    
+                    // Determinar quais linhas mostrar
+                    let rowsToShow = [];
+                    if (currentUserIndex === 0) {
+                        // Primeiro lugar: mostra ele + 2 abaixo
+                        rowsToShow = allUsers.slice(0, 3);
+                    } else if (currentUserIndex === allUsers.length - 1) {
+                        // Último lugar: mostra ele + 2 acima
+                        rowsToShow = allUsers.slice(-3);
+                    } else {
+                        // Meio da tabela: mostra 1 acima, ele, e 1 abaixo
+                        rowsToShow = allUsers.slice(Math.max(0, currentUserIndex - 1), currentUserIndex + 2);
+                    }
+
+                    // Atualizar a tabela
+                    tableBody.innerHTML = rowsToShow.map((user, indexInSlice) => {
+                        const actualPosition = allUsers.findIndex(u => u.id === user.id) + 1;
+                        const isCurrentUser = user.id === currentUser.uid;
+                        
+                        return `
+                            <tr ${isCurrentUser ? 'style="background-color: #f0f8ff;"' : ''}>
+                                <td>${actualPosition}</td>
+                                <td>${user.name}</td>
+                                <td>${user.points}</td>
+                            </tr>
+                        `;
+                    }).join('');
+
+                    // Adicionar mensagem informando que é uma visualização parcial
+                    if (allUsers.length > 3) {
+                        const infoRow = document.createElement('tr');
+                        infoRow.innerHTML = `<td colspan="3" style="text-align: center; font-size: 0.8em; color: #666;">
+                            Mostrando apenas sua posição e jogadores próximos. Clique para ver a tabela completa.
+                        </td>`;
+                        tableBody.appendChild(infoRow);
+                    }
+                });
+            });
+        }
+
+        function loadSupercopaInfo() {
+            const currentUser = auth.currentUser;
+            const supercopaRef = database.ref('tournaments/supercopa');
+            const supercopaSection = document.getElementById('supercopa-section');
+            
+            supercopaRef.once('value', (snapshot) => {
+                const supercopaData = snapshot.val();
+                
+                // Verificar status da Supercopa
+                if (supercopaData.groups && supercopaData.groups.status === 1) {
+                    // Encontrar em qual grupo o usuário está
+                    let userGroup = null;
+                    for (const group in supercopaData.groups) {
+                        if (group.includes('group') && 
+                            supercopaData.groups[group].includes(currentUser.uid)) {
+                            userGroup = group;
+                            break;
+                        }
+                    }
+                    
+                    if (userGroup) {
+                        // Atualizar o card da Supercopa para mostrar informações do grupo
+                        const groupNameMap = {
+                            'group1': 'Grupo A',
+                            'group2': 'Grupo B',
+                            'group3': 'Grupo C',
+                            'group4': 'Grupo D'
+                        };
+                        
+                        supercopaSection.innerHTML = `
+                            <h3>
+                                Supercopa 
+                                <span class="status status-em-progresso">Em Progresso</span>
+                            </h3>
+                            <p>Você está no ${groupNameMap[userGroup]}</p>
+                            <p>Clique para ver os detalhes do seu grupo.</p>
+                        `;
+                    } else {
+                        supercopaSection.innerHTML = `
+                            <h3>
+                                Supercopa 
+                                <span class="status status-em-progresso">Em Progresso</span>
+                            </h3>
+                            <p>Você não está participando desta edição da Supercopa.</p>
+                        `;
+                    }
+                } else {
+                    // Supercopa não iniciada
+                    supercopaSection.innerHTML = `
+                        <h3>
+                            Supercopa 
+                            <span class="status status-nao-iniciada">Não Iniciada</span>
+                        </h3>
+                        <p>Competição ainda não iniciada. Aguarde mais informações.</p>
+                    `;
+                }
+            });
+        }
+
+        function loadNextRound() {
+            const roundsRef = database.ref('rounds');
+            const nextRoundInfo = document.getElementById('next-round-info');
+            const makePredictionsButton = document.getElementById('make-predictions-button');
+
+            roundsRef.orderByChild('status').equalTo(1).limitToFirst(1).once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    snapshot.forEach((childSnapshot) => {
+                        const roundData = childSnapshot.val();
+                        const finishDate = new Date(roundData.finishTimestamp);
+                        
+                        nextRoundInfo.innerHTML = `
+                            <p>Rodada em andamento</p>
+                            <p>Limite para palpites: ${finishDate.toLocaleString()}</p>
+                        `;
+                        makePredictionsButton.disabled = false;
+                    });
+                } else {
+                    nextRoundInfo.innerHTML = '<p>Nenhuma rodada disponível no momento</p>';
+                    makePredictionsButton.disabled = true;
+                }
+            });
+        }
+
+        function loadPastRounds() {
+            const roundsRef = database.ref('rounds');
+            const pastRoundsElement = document.getElementById('past-rounds');
+
+            roundsRef.orderByChild('status').equalTo(2).limitToLast(5).once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const roundsHtml = [];
+                    snapshot.forEach((childSnapshot) => {
+                        const roundData = childSnapshot.val();
+                        roundsHtml.push(`
+                            <div>
+                                <strong>Rodada ${roundData.id}</strong>
+                                <p>Torneios: ${roundData.tournaments.join(', ')}</p>
+                                <p>Finalizada em: ${new Date(roundData.finishTimestamp).toLocaleString()}</p>
+                            </div>
+                        `);
+                    });
+                    pastRoundsElement.innerHTML = roundsHtml.reverse().join('<hr>');
+                } else {
+                    pastRoundsElement.innerHTML = '<p>Nenhum histórico de rodadas disponível.</p>';
+                }
+            });
+        }
+
+        // Add event listener for making predictions
+        document.getElementById('make-predictions-button').addEventListener('click', () => {
+            window.location.href = 'palpites.html';
+        });
+
+        document.querySelectorAll('.section-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const page = card.getAttribute('data-page');
+                if (page) {
+                    window.location.href = page;
+                }
+            });
+        });
+
+        // Verificar se o usuário é admin
+        function checkAdminStatus(userId) {
+            const userRef = database.ref('users/' + userId);
+            userRef.once('value', (snapshot) => {
+                const userData = snapshot.val();
+                const adminButton = document.getElementById('admin-button');
+                
+                if (userData.isAdmin) {
+                    adminButton.style.display = 'inline-block';
+                }
+            });
+        }
+
+        // No observer de autenticação, adicionar a verificação de admin
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // [Código anterior mantido]
+                checkAdminStatus(user.uid);
+
+                // Adicionar evento para botão de admin
+                document.getElementById('admin-button').addEventListener('click', () => {
+                    window.location.href = 'admin.html';
+                });
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>
