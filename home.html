@@ -25,16 +25,27 @@
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.6;
+            min-height: 100vh;
+            overflow-y: auto; /* Ensure vertical scrolling */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            min-height: 100vh;
+            overflow-y: auto; /* Allow container to scroll */
+            padding-bottom: 50px; /* Extra padding for bottom content */
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+                overflow-x: hidden; /* Prevent horizontal overflow */
+            }
+
+            .sections {
+                grid-template-columns: 1fr; /* Stack cards vertically on mobile */
+                gap: 15px;
+            }
         }
 
         .header {
@@ -417,7 +428,7 @@
         // Verificar autenticação
         const user = JSON.parse(localStorage.getItem('user'));
         if (!user) {
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         }
 
         // Logout functionality
@@ -466,7 +477,7 @@
                     });
             } else {
                 console.log('No user signed in');
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
             }
         });
 
