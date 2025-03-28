@@ -239,6 +239,15 @@
             measurementId: "G-4JXFEZ8DW6"
         };
 
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            // Mostrar informações do usuário ou redirecionar conforme necessário
+            console.log('Usuário autenticado: ', user);
+        } else {
+            // Redirecionar para login se o usuário não estiver autenticado
+            window.location.href = 'login.html';
+        }
+
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
