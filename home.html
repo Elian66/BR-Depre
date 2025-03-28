@@ -13,6 +13,9 @@
             --card-background: white;
             --text-color: #333;
             --border-radius: 12px;
+            --box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --loading-spinner-color: var(--primary-color);
+            --countdown-color: #e74c3c;
         }
 
         * {
@@ -47,7 +50,7 @@
             background-color: var(--card-background);
             border-radius: var(--border-radius);
             padding: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: var(--box-shadow);
         }
 
         .user-profile img {
@@ -60,6 +63,8 @@
 
         .user-info h2 {
             margin-bottom: 5px;
+            color: var(--text-color);
+            font-weight: 500;
         }
 
         .user-info .team-info {
@@ -85,24 +90,34 @@
             background-color: var(--card-background);
             border-radius: var(--border-radius);
             padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: var(--box-shadow);
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
+
         .section-card:hover {
-            transform: scale(1.02);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
+
         .section-card h3 {
             margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 1.2em;
+            color: var(--text-color);
         }
 
         .section-card .status {
-            font-size: 0.8em;
-            padding: 3px 8px;
-            border-radius: 4px;
+            font-size: 0.75em;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .status-em-progresso {
@@ -123,17 +138,20 @@
         .standings-table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 0.95em;
         }
 
         .standings-table th, 
         .standings-table td {
             border-bottom: 1px solid #ecf0f1;
-            padding: 8px;
+            padding: 10px 8px;
             text-align: left;
         }
 
         .standings-table th {
             background-color: #f8f9fa;
+            font-weight: 500;
+            color: #555;
         }
 
         .standings-table tr.highlighted {
@@ -151,18 +169,161 @@
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 10px 20px;
             border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+            width: 100%;
+            margin-top: 15px;
+            font-size: 0.95em;
         }
 
         .action-button:hover {
             background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .action-button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading Screen Styles */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        #loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-content {
+            text-align: center;
+            max-width: 300px;
+            padding: 30px;
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(0,0,0,0.1);
+            border-top-color: var(--loading-spinner-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .loading-text {
+            font-size: 1.1em;
+            color: var(--text-color);
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        /* Countdown Timer Styles */
+        #countdown-timer {
+            font-weight: 700;
+            color: var(--countdown-color);
+            font-size: 1.1em;
+        }
+
+        /* Next Round Info Styles */
+        #next-round-info {
+            line-height: 1.7;
+        }
+
+        #next-round-info p {
+            margin-bottom: 8px;
+        }
+
+        #finish-time {
+            font-weight: 500;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .section-card {
+                padding: 15px;
+            }
+
+            .standings-table th, 
+            .standings-table td {
+                padding: 8px 5px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Animations */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Card hover effect */
+        .section-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section-card:hover::after {
+            opacity: 1;
+        }
+
+        /* Info message in standings table */
+        .standings-info-message {
+            text-align: center;
+            font-size: 0.85em;
+            color: #666;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
         }
     </style>
 </head>
 <body>
+    <!-- Tela de loading -->
+    <div id="loading-screen" style="display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--background-color); z-index: 9999;">
+        <div style="text-align: center;">
+            <div style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+            <p>Carregando...</p>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header">
             <div class="user-profile" id="user-profile">
@@ -239,76 +400,145 @@
             measurementId: "G-4JXFEZ8DW6"
         };
 
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (user) {
-            // Mostrar informações do usuário ou redirecionar conforme necessário
-            console.log('Usuário autenticado: ', user);
-        } else {
-            // Redirecionar para login se o usuário não estiver autenticado
-            window.location.href = 'login.html';
-        }
-
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
 
+        // Cache de dados
+        let cachedData = {
+            userProfile: null,
+            superliga: null,
+            supercopa: null,
+            nextRound: null,
+            pastRounds: null
+        };
+
+        // Verificar autenticação
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) {
+            window.location.href = 'login.html';
+        }
+
         // Logout functionality
         document.getElementById('logout-button').addEventListener('click', () => {
             auth.signOut().then(() => {
-                window.location.href = 'login.html';
+                // Limpa o localStorage e redireciona
+                localStorage.clear();
+                window.location.replace('index.html');
             }).catch((error) => {
                 console.error('Erro ao sair:', error);
             });
         });
 
-        // Authentication State Observer
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                // User is signed in
-                loadUserProfile(user.uid);
-                loadSuperligaStandings();
-                loadSupercopaInfo();  // Adicionar esta linha
-                loadNextRound();
-                loadPastRounds();
-                checkAdminStatus(user.uid);
+        // Observer de autenticação com logs detalhados
+        auth.onAuthStateChanged((firebaseUser) => {
+            console.log('onAuthStateChanged fired');
+            console.log('Firebase User:', firebaseUser);
+
+            if (firebaseUser) {
+                console.log('Firebase User UID:', firebaseUser.uid);
+                
+                // Verificar se o usuário no localStorage corresponde ao usuário do Firebase
+                if (!user || user.uid !== firebaseUser.uid) {
+                    console.warn('Usuário no localStorage não corresponde ao usuário do Firebase');
+                    localStorage.setItem('user', JSON.stringify({
+                        uid: firebaseUser.uid,
+                        email: firebaseUser.email
+                    }));
+                }
+
+                // Carregar perfil do usuário
+                loadUserProfile(firebaseUser.uid)
+                    .then(() => {
+                        console.log('User profile loaded successfully');
+                        // Continuar com outros carregamentos
+                        return loadSuperligaStandings();
+                    })
+                    .then(() => loadSupercopaInfo())
+                    .then(() => loadNextRound())
+                    .then(() => loadPastRounds())
+                    .then(() => checkAdminStatus(firebaseUser.uid))
+                    .then(() => document.getElementById('loading-screen').style.display = 'none')
+                    .catch((error) => {
+                        console.error('Erro no carregamento de dados:', error);
+                        document.getElementById('loading-screen').style.display = 'none';
+                    });
             } else {
-                // No user is signed in
+                console.log('No user signed in');
                 window.location.href = 'login.html';
             }
         });
 
         function loadUserProfile(userId) {
+            console.log('Loading user profile for:', userId);
+            
             const userProfileRef = database.ref('users/' + userId);
             const teamsRef = database.ref('teams');
 
-            userProfileRef.once('value', (userSnapshot) => {
-                const userData = userSnapshot.val();
-                
-                teamsRef.child(userData.teamId).once('value', (teamSnapshot) => {
-                    const teamData = teamSnapshot.val();
-                    
-                    const userProfileElement = document.getElementById('user-profile');
-                    userProfileElement.innerHTML = `
-                        <img src="${teamData.image || 'default-avatar.png'}" alt="Team Logo">
-                        <div class="user-info">
-                            <h2>${userData.name}</h2>
-                            <div class="team-info">
-                                ${teamData.name} (${userData.abbr})
-                            </div>
-                        </div>
-                    `;
-                });
+            return new Promise((resolve, reject) => {
+                userProfileRef.once('value')
+                    .then((userSnapshot) => {
+                        console.log('User snapshot:', userSnapshot.exists(), userSnapshot.val());
+                        
+                        if (!userSnapshot.exists()) {
+                            reject(new Error('Usuário não encontrado'));
+                            return;
+                        }
+
+                        const userData = userSnapshot.val();
+                        
+                        return teamsRef.child(userData.teamId).once('value')
+                            .then((teamSnapshot) => {
+                                console.log('Team snapshot:', teamSnapshot.exists(), teamSnapshot.val());
+                                
+                                if (!teamSnapshot.exists()) {
+                                    reject(new Error('Time não encontrado'));
+                                    return;
+                                }
+
+                                const profileData = {
+                                    id: userId,
+                                    userData: userData,
+                                    teamData: teamSnapshot.val()
+                                };
+
+                                cachedData.userProfile = profileData;
+                                updateUserProfileUI(profileData);
+                                resolve(profileData);
+                            });
+                    })
+                    .catch((error) => {
+                        console.error('Erro ao carregar perfil do usuário:', error);
+                        reject(error);
+                    });
             });
         }
 
+        function updateUserProfileUI(profileData) {
+            const userProfileElement = document.getElementById('user-profile');
+            userProfileElement.innerHTML = `
+                <img src="${profileData.teamData.image || 'default-avatar.png'}" alt="Team Logo">
+                <div class="user-info">
+                    <h2>${profileData.userData.name}</h2>
+                    <div class="team-info">
+                        ${profileData.teamData.name} (${profileData.userData.abbr})
+                    </div>
+                </div>
+            `;
+        }
+
         function loadSuperligaStandings() {
+            if (cachedData.superliga) {
+                updateSuperligaUI(cachedData.superliga);
+                return Promise.resolve();
+            }
+
             const usersRef = database.ref('users');
-            const tableBody = document.querySelector('#superliga-table tbody');
             const superligaStagesRef = database.ref('tournaments/superliga/stages');
             const currentUser = auth.currentUser;
 
-            superligaStagesRef.once('value', (snapshot) => {
+            return superligaStagesRef.once('value').then((snapshot) => {
                 let status = "";
                 snapshot.forEach((childSnapshot) => {
                     const stageData = childSnapshot.val();
@@ -318,10 +548,10 @@
                 });
 
                 const pointsField = (status === 'abertura') ? 'pointsSuperligaAbertura' : 
-                                (status === 'clausura') ? 'pointsSuperligaClausura' : 
-                                'pointsSuperligaClausura';
+                                 (status === 'clausura') ? 'pointsSuperligaClausura' : 
+                                 'pointsSuperligaClausura';
 
-                usersRef.once('value', (snapshot) => {
+                return usersRef.once('value').then((snapshot) => {
                     const allUsers = [];
                     snapshot.forEach((childSnapshot) => {
                         const userData = childSnapshot.val();
@@ -343,153 +573,239 @@
                         return b.points - a.points;
                     });
 
-                    // Encontrar a posição do usuário atual
-                    const currentUserIndex = allUsers.findIndex(user => user.id === currentUser.uid);
-                    
-                    // Determinar quais linhas mostrar
-                    let rowsToShow = [];
-                    if (currentUserIndex === 0) {
-                        // Primeiro lugar: mostra ele + 2 abaixo
-                        rowsToShow = allUsers.slice(0, 3);
-                    } else if (currentUserIndex === allUsers.length - 1) {
-                        // Último lugar: mostra ele + 2 acima
-                        rowsToShow = allUsers.slice(-3);
-                    } else {
-                        // Meio da tabela: mostra 1 acima, ele, e 1 abaixo
-                        rowsToShow = allUsers.slice(Math.max(0, currentUserIndex - 1), currentUserIndex + 2);
-                    }
+                    const standingsData = {
+                        allUsers: allUsers,
+                        currentUser: currentUser.uid,
+                        pointsField: pointsField
+                    };
 
-                    // Atualizar a tabela
-                    tableBody.innerHTML = rowsToShow.map((user, indexInSlice) => {
-                        const actualPosition = allUsers.findIndex(u => u.id === user.id) + 1;
-                        const isCurrentUser = user.id === currentUser.uid;
-                        
-                        return `
-                            <tr ${isCurrentUser ? 'style="background-color: #f0f8ff;"' : ''}>
-                                <td>${actualPosition}</td>
-                                <td>${user.name}</td>
-                                <td>${user.points}</td>
-                            </tr>
-                        `;
-                    }).join('');
-
-                    // Adicionar mensagem informando que é uma visualização parcial
-                    if (allUsers.length > 3) {
-                        const infoRow = document.createElement('tr');
-                        infoRow.innerHTML = `<td colspan="3" style="text-align: center; font-size: 0.8em; color: #666;">
-                            Mostrando apenas sua posição e jogadores próximos. Clique para ver a tabela completa.
-                        </td>`;
-                        tableBody.appendChild(infoRow);
-                    }
+                    cachedData.superliga = standingsData;
+                    updateSuperligaUI(standingsData);
                 });
             });
         }
 
+        function updateSuperligaUI(standingsData) {
+            const tableBody = document.querySelector('#superliga-table tbody');
+            const { allUsers, currentUser } = standingsData;
+            
+            // Encontrar a posição do usuário atual
+            const currentUserIndex = allUsers.findIndex(user => user.id === currentUser);
+            
+            // Determinar quais linhas mostrar
+            let rowsToShow = [];
+            if (currentUserIndex === 0) {
+                // Primeiro lugar: mostra ele + 2 abaixo
+                rowsToShow = allUsers.slice(0, 3);
+            } else if (currentUserIndex === allUsers.length - 1) {
+                // Último lugar: mostra ele + 2 acima
+                rowsToShow = allUsers.slice(-3);
+            } else {
+                // Meio da tabela: mostra 1 acima, ele, e 1 abaixo
+                rowsToShow = allUsers.slice(Math.max(0, currentUserIndex - 1), currentUserIndex + 2);
+            }
+
+            // Atualizar a tabela
+            tableBody.innerHTML = rowsToShow.map((user, indexInSlice) => {
+                const actualPosition = allUsers.findIndex(u => u.id === user.id) + 1;
+                const isCurrentUser = user.id === currentUser;
+                
+                return `
+                    <tr ${isCurrentUser ? 'style="background-color: #f0f8ff;"' : ''}>
+                        <td>${actualPosition}</td>
+                        <td>${user.name}</td>
+                        <td>${user.points}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Adicionar mensagem informando que é uma visualização parcial
+            if (allUsers.length > 3) {
+                const infoRow = document.createElement('tr');
+                infoRow.innerHTML = `<td colspan="3" style="text-align: center; font-size: 0.8em; color: #666;">
+                    Mostrando apenas sua posição e jogadores próximos. Clique para ver a tabela completa.
+                </td>`;
+                tableBody.appendChild(infoRow);
+            }
+        }
+
         function loadSupercopaInfo() {
+            console.log('oi1')
+            if (cachedData.supercopa) {
+                updateSupercopaUI(cachedData.supercopa);
+                return Promise.resolve();
+            }
+
             const currentUser = auth.currentUser;
             const supercopaRef = database.ref('tournaments/supercopa');
-            const supercopaSection = document.getElementById('supercopa-section');
             
-            supercopaRef.once('value', (snapshot) => {
+            return supercopaRef.once('value').then((snapshot) => {
                 const supercopaData = snapshot.val();
+                cachedData.supercopa = { data: supercopaData, currentUser: currentUser.uid };
+                updateSupercopaUI(cachedData.supercopa);
+            });
+        }
+
+        function updateSupercopaUI(supercopaInfo) {
+            const supercopaSection = document.getElementById('supercopa-section');
+            const { data: supercopaData, currentUser } = supercopaInfo;
+            
+            // Verificar status da Supercopa
+            if (supercopaData.groups && supercopaData.groups.status === 1) {
+                // Encontrar em qual grupo o usuário está
+                let userGroup = null;
+                for (const group in supercopaData.groups) {
+                    if (group.includes('group') && 
+                        supercopaData.groups[group].includes(currentUser)) {
+                        userGroup = group;
+                        break;
+                    }
+                }
                 
-                // Verificar status da Supercopa
-                if (supercopaData.groups && supercopaData.groups.status === 1) {
-                    // Encontrar em qual grupo o usuário está
-                    let userGroup = null;
-                    for (const group in supercopaData.groups) {
-                        if (group.includes('group') && 
-                            supercopaData.groups[group].includes(currentUser.uid)) {
-                            userGroup = group;
-                            break;
-                        }
-                    }
+                if (userGroup) {
+                    // Atualizar o card da Supercopa para mostrar informações do grupo
+                    const groupNameMap = {
+                        'group1': 'Grupo A',
+                        'group2': 'Grupo B',
+                        'group3': 'Grupo C',
+                        'group4': 'Grupo D'
+                    };
                     
-                    if (userGroup) {
-                        // Atualizar o card da Supercopa para mostrar informações do grupo
-                        const groupNameMap = {
-                            'group1': 'Grupo A',
-                            'group2': 'Grupo B',
-                            'group3': 'Grupo C',
-                            'group4': 'Grupo D'
-                        };
-                        
-                        supercopaSection.innerHTML = `
-                            <h3>
-                                Supercopa 
-                                <span class="status status-em-progresso">Em Progresso</span>
-                            </h3>
-                            <p>Você está no ${groupNameMap[userGroup]}</p>
-                            <p>Clique para ver os detalhes do seu grupo.</p>
-                        `;
-                    } else {
-                        supercopaSection.innerHTML = `
-                            <h3>
-                                Supercopa 
-                                <span class="status status-em-progresso">Em Progresso</span>
-                            </h3>
-                            <p>Você não está participando desta edição da Supercopa.</p>
-                        `;
-                    }
-                } else {
-                    // Supercopa não iniciada
                     supercopaSection.innerHTML = `
                         <h3>
                             Supercopa 
-                            <span class="status status-nao-iniciada">Não Iniciada</span>
+                            <span class="status status-em-progresso">Em Progresso</span>
                         </h3>
-                        <p>Competição ainda não iniciada. Aguarde mais informações.</p>
+                        <p>Você está no ${groupNameMap[userGroup]}</p>
+                        <p>Clique para ver os detalhes do seu grupo.</p>
+                    `;
+                } else {
+                    supercopaSection.innerHTML = `
+                        <h3>
+                            Supercopa 
+                            <span class="status status-em-progresso">Em Progresso</span>
+                        </h3>
+                        <p>Você não está participando desta edição da Supercopa.</p>
                     `;
                 }
-            });
+            } else {
+                // Supercopa não iniciada
+                supercopaSection.innerHTML = `
+                    <h3>
+                        Supercopa 
+                        <span class="status status-nao-iniciada">Não Iniciada</span>
+                    </h3>
+                    <p>Competição ainda não iniciada. Aguarde mais informações.</p>
+                `;
+            }
         }
 
         function loadNextRound() {
-            const roundsRef = database.ref('rounds');
-            const nextRoundInfo = document.getElementById('next-round-info');
-            const makePredictionsButton = document.getElementById('make-predictions-button');
+            console.log('oi2')
+            if (cachedData.nextRound) {
+                updateNextRoundUI(cachedData.nextRound);
+                startCountdown(cachedData.nextRound.finishTimestamp);
+                return Promise.resolve();
+            }
 
-            roundsRef.orderByChild('status').equalTo(1).limitToFirst(1).once('value', (snapshot) => {
+            const roundsRef = database.ref('rounds');
+            
+            return roundsRef.orderByChild('status').equalTo(1).limitToFirst(1).once('value').then((snapshot) => {
                 if (snapshot.exists()) {
                     snapshot.forEach((childSnapshot) => {
                         const roundData = childSnapshot.val();
-                        const finishDate = new Date(roundData.finishTimestamp);
-                        
-                        nextRoundInfo.innerHTML = `
-                            <p>Rodada em andamento</p>
-                            <p>Limite para palpites: ${finishDate.toLocaleString()}</p>
-                        `;
-                        makePredictionsButton.disabled = false;
+                        cachedData.nextRound = roundData;
+                        updateNextRoundUI(roundData);
+                        startCountdown(roundData.finishTimestamp);
                     });
                 } else {
-                    nextRoundInfo.innerHTML = '<p>Nenhuma rodada disponível no momento</p>';
-                    makePredictionsButton.disabled = true;
+                    document.getElementById('next-round-info').innerHTML = '<p>Nenhuma rodada disponível no momento</p>';
+                    document.getElementById('make-predictions-button').disabled = true;
                 }
             });
         }
 
-        function loadPastRounds() {
-            const roundsRef = database.ref('rounds');
-            const pastRoundsElement = document.getElementById('past-rounds');
+        function updateNextRoundUI(roundData) {
+            const nextRoundInfo = document.getElementById('next-round-info');
+            const makePredictionsButton = document.getElementById('make-predictions-button');
+            
+            // Converter para AMZ (Amazon Time = UTC-4)
+            const finishDate = new Date(roundData.finishTimestamp);
+            finishDate.setHours(finishDate.getHours() - 4); // Ajuste para AMZ
+            
+            nextRoundInfo.innerHTML = `
+                <p>Rodada em andamento</p>
+                <p>Limite para palpites: <span id="finish-time">${finishDate.toLocaleString('pt-BR')}</span></p>
+                <p>Tempo restante: <span id="countdown-timer">calculando...</span></p>
+            `;
+            makePredictionsButton.disabled = false;
+        }
 
-            roundsRef.orderByChild('status').equalTo(2).limitToLast(5).once('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const roundsHtml = [];
-                    snapshot.forEach((childSnapshot) => {
-                        const roundData = childSnapshot.val();
-                        roundsHtml.push(`
-                            <div>
-                                <strong>Rodada ${roundData.id}</strong>
-                                <p>Torneios: ${roundData.tournaments.join(', ')}</p>
-                                <p>Finalizada em: ${new Date(roundData.finishTimestamp).toLocaleString()}</p>
-                            </div>
-                        `);
-                    });
-                    pastRoundsElement.innerHTML = roundsHtml.reverse().join('<hr>');
-                } else {
-                    pastRoundsElement.innerHTML = '<p>Nenhum histórico de rodadas disponível.</p>';
+        function startCountdown(finishTimestamp) {
+            const countdownElement = document.getElementById('countdown-timer');
+            if (!countdownElement) return;
+
+            const updateCountdown = () => {
+                const now = new Date();
+                const end = new Date(finishTimestamp);
+                end.setHours(end.getHours() - 4); // Ajuste para AMZ
+                
+                const diff = end - now;
+                
+                if (diff <= 0) {
+                    countdownElement.textContent = "Tempo esgotado!";
+                    clearInterval(interval);
+                    return;
                 }
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                countdownElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            };
+            
+            updateCountdown();
+            const interval = setInterval(updateCountdown, 1000);
+        }
+
+        function loadPastRounds() {
+            console.log('oi3')
+            if (cachedData.pastRounds) {
+                updatePastRoundsUI(cachedData.pastRounds);
+                return Promise.resolve();
+            }
+
+            const roundsRef = database.ref('rounds');
+            
+            return roundsRef.orderByChild('status').equalTo(2).limitToLast(5).once('value').then((snapshot) => {
+                const pastRounds = [];
+                if (snapshot.exists()) {
+                    snapshot.forEach((childSnapshot) => {
+                        pastRounds.push(childSnapshot.val());
+                    });
+                }
+                cachedData.pastRounds = pastRounds;
+                updatePastRoundsUI(pastRounds);
             });
+        }
+
+        function updatePastRoundsUI(pastRounds) {
+            const pastRoundsElement = document.getElementById('past-rounds');
+            
+            if (pastRounds.length > 0) {
+                const roundsHtml = pastRounds.reverse().map(roundData => `
+                    <div>
+                        <strong>Rodada ${roundData.id}</strong>
+                        <p>Torneios: ${roundData.tournaments.join(', ')}</p>
+                        <p>Finalizada em: ${new Date(roundData.finishTimestamp).toLocaleString()}</p>
+                    </div>
+                `).join('<hr>');
+                pastRoundsElement.innerHTML = roundsHtml;
+            } else {
+                pastRoundsElement.innerHTML = '<p>Nenhum histórico de rodadas disponível.</p>';
+            }
         }
 
         // Add event listener for making predictions
@@ -508,31 +824,32 @@
 
         // Verificar se o usuário é admin
         function checkAdminStatus(userId) {
+            console.log('oi4')
+            if (cachedData.userProfile && cachedData.userProfile.userData.isAdmin !== undefined) {
+                updateAdminButton(cachedData.userProfile.userData.isAdmin);
+                return Promise.resolve();
+            }
+
             const userRef = database.ref('users/' + userId);
-            userRef.once('value', (snapshot) => {
+            
+            return userRef.once('value').then((snapshot) => {
                 const userData = snapshot.val();
-                const adminButton = document.getElementById('admin-button');
-                
-                if (userData.isAdmin) {
-                    adminButton.style.display = 'inline-block';
+                if (cachedData.userProfile) {
+                    cachedData.userProfile.userData.isAdmin = userData.isAdmin;
                 }
+                updateAdminButton(userData.isAdmin);
             });
         }
 
-        // No observer de autenticação, adicionar a verificação de admin
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                // [Código anterior mantido]
-                checkAdminStatus(user.uid);
-
-                // Adicionar evento para botão de admin
-                document.getElementById('admin-button').addEventListener('click', () => {
+        function updateAdminButton(isAdmin) {
+            const adminButton = document.getElementById('admin-button');
+            if (isAdmin) {
+                adminButton.style.display = 'inline-block';
+                adminButton.addEventListener('click', () => {
                     window.location.href = 'admin.html';
                 });
-            } else {
-                window.location.href = 'login.html';
             }
-        });
+        }
     </script>
 </body>
 </html>
