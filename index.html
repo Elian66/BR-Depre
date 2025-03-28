@@ -80,27 +80,28 @@
         @media screen and (max-width: 1023px) {
             .container {
                 flex-direction: column;
-                height: 100vh;
+                min-height: 100vh; /* Mudança de height para min-height */
+                overflow-y: auto; /* Permitir scroll */
             }
 
             .top-content {
-                height: 60%;
+                min-height: 60%; /* Mudança de height para min-height */
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 padding: 1rem;
-                overflow: hidden;
             }
 
             .bottom-content {
-                height: 40%;
+                min-height: 40%; /* Mudança de height para min-height */
                 display: flex;
                 justify-content: center;
                 align-items: flex-start;
                 padding: 1rem;
                 background: rgba(255,255,255,0.05);
                 backdrop-filter: blur(10px);
+                margin-bottom: 20px; /* Adiciona margem inferior */
             }
 
             .logo {
@@ -139,6 +140,7 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                margin-bottom: 20px;
             }
         }
 
@@ -212,6 +214,7 @@
         .form-switch {
             margin-top: 1rem;
             text-align: center;
+            font-size: small;
             color: var(--text-secondary);
         }
 
@@ -638,6 +641,38 @@
                 .catch((error) => {
                     errorMessageRecover.textContent = 'Erro ao enviar o link de recuperação: ' + error.message;
                 });
+        });
+
+        document.getElementById('show-register').addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+            recoverForm.style.display = 'none';
+            errorMessageRegister.textContent = '';
+        });
+
+        document.getElementById('show-recover').addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'none';
+            recoverForm.style.display = 'block';
+            errorMessageRecover.textContent = '';
+        });
+
+        document.getElementById('show-login-from-register').addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            recoverForm.style.display = 'none';
+            errorMessage.textContent = '';
+        });
+
+        document.getElementById('show-login-from-recover').addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            recoverForm.style.display = 'none';
+            errorMessage.textContent = '';
         });
     
         // Initialize the Team Select Dropdown
